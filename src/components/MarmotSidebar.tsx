@@ -18,7 +18,7 @@ export function MarmotSidebar({ activeSection, onSectionChange }: MarmotSidebarP
       {/* Logo */}
       <div className="p-6 border-b border-sidebar-border">
         <div className="flex items-center space-x-3">
-          <span className="text-2xl">🐿️</span>
+          <span className="text-2xl leading-none bg-transparent border-none outline-none">🐿️</span>
           <span className="text-xl font-bold text-primary glow-primary">Marmot</span>
         </div>
       </div>
