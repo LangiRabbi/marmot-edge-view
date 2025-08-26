@@ -51,7 +51,7 @@ export function MarmotTopBar({ activeSection }: MarmotTopBarProps) {
 
         {/* Real-time Clock */}
         <div className="text-right">
-          <div className="text-lg font-mono text-primary glow-primary">
+          <div className="text-lg font-mono text-primary bg-transparent border-none outline-none">
             {currentTime.toLocaleTimeString('en-US', { hour12: false })}
           </div>
           <div className="text-xs text-muted-foreground">
