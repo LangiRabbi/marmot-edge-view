@@ -1,4 +1,5 @@
 import { Users, Clock, MoreVertical, Edit, Settings, BarChart3, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -7,22 +8,45 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { WorkstationDetailsModal } from "./WorkstationDetailsModal";
+import { EditWorkstationModal } from "./EditWorkstationModal";
+import { useToast } from "@/hooks/use-toast";
 
 interface WorkstationCardProps {
+  id: string;
   name: string;
   status: 'online' | 'offline' | 'alert';
   peopleCount: number;
   efficiency: number;
   lastActivity: string;
+  onEdit?: (id: string, newName: string) => void;
+  onRemove?: (id: string) => void;
 }
 
 export function WorkstationCard({ 
+  id,
   name, 
   status, 
   peopleCount, 
   efficiency, 
-  lastActivity 
+  lastActivity,
+  onEdit,
+  onRemove
 }: WorkstationCardProps) {
+  const { toast } = useToast();
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const getStatusColor = () => {
     switch (status) {
       case 'online': return 'text-success';
@@ -45,6 +69,42 @@ export function WorkstationCard({
     return 'text-destructive';
   };
 
+  const handleViewDetails = () => {
+    setShowDetailsModal(true);
+  };
+
+  const handleEditName = () => {
+    setShowEditModal(true);
+  };
+
+  const handleConfigure = () => {
+    toast({
+      title: "Configuration",
+      description: "Configuration coming soon",
+    });
+  };
+
+  const handleRemove = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const confirmRemove = () => {
+    onRemove?.(id);
+    setShowDeleteDialog(false);
+    toast({
+      title: "Workstation Removed",
+      description: `${name} has been removed successfully.`,
+    });
+  };
+
+  const handleSaveEdit = (newName: string) => {
+    onEdit?.(id, newName);
+    toast({
+      title: "Workstation Updated",
+      description: `Workstation renamed to ${newName}.`,
+    });
+  };
+
   return (
     <div className="glass-card p-6 smooth-transition">
       {/* Header */}
@@ -57,19 +117,19 @@ export function WorkstationCard({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-popover border-border">
-            <DropdownMenuItem className="hover:bg-muted">
-              <Edit className="mr-2 h-4 w-4" />
-              Edit Name
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-muted">
-              <Settings className="mr-2 h-4 w-4" />
-              Configure
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-muted">
+            <DropdownMenuItem onClick={handleViewDetails} className="hover:bg-muted cursor-pointer">
               <BarChart3 className="mr-2 h-4 w-4" />
               View Details
             </DropdownMenuItem>
-            <DropdownMenuItem className="hover:bg-muted text-destructive">
+            <DropdownMenuItem onClick={handleEditName} className="hover:bg-muted cursor-pointer">
+              <Edit className="mr-2 h-4 w-4" />
+              Edit Name
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleConfigure} className="hover:bg-muted cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              Configure
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleRemove} className="hover:bg-muted text-destructive cursor-pointer">
               <Trash2 className="mr-2 h-4 w-4" />
               Remove
             </DropdownMenuItem>
@@ -110,6 +170,43 @@ export function WorkstationCard({
         <Clock className="h-3 w-3" />
         <span>{lastActivity}</span>
       </div>
+
+      {/* Modals */}
+      <WorkstationDetailsModal
+        open={showDetailsModal}
+        onOpenChange={setShowDetailsModal}
+        workstation={{ name, status, peopleCount, efficiency, lastActivity }}
+      />
+
+      <EditWorkstationModal
+        open={showEditModal}
+        onOpenChange={setShowEditModal}
+        currentName={name}
+        onSave={handleSaveEdit}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="bg-background border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-foreground">Remove Workstation</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground">
+              Are you sure you want to remove "{name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-border hover:bg-muted text-foreground">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemove}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
