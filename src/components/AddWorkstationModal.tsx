@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -12,9 +13,10 @@ import { Label } from "@/components/ui/label";
 interface AddWorkstationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onAddWorkstation: (name: string, ipAddress: string) => void;
 }
 
-export function AddWorkstationModal({ open, onOpenChange }: AddWorkstationModalProps) {
+export function AddWorkstationModal({ open, onOpenChange, onAddWorkstation }: AddWorkstationModalProps) {
   const [formData, setFormData] = useState({
     name: "",
     ipAddress: ""
@@ -22,10 +24,10 @@ export function AddWorkstationModal({ open, onOpenChange }: AddWorkstationModalP
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Adding workstation:", formData);
-    onOpenChange(false);
-    setFormData({ name: "", ipAddress: "" });
+    if (formData.name.trim() && formData.ipAddress.trim()) {
+      onAddWorkstation(formData.name.trim(), formData.ipAddress.trim());
+      setFormData({ name: "", ipAddress: "" });
+    }
   };
 
   return (
@@ -35,6 +37,9 @@ export function AddWorkstationModal({ open, onOpenChange }: AddWorkstationModalP
           <DialogTitle className="text-xl font-semibold text-foreground">
             Add New Workstation
           </DialogTitle>
+          <DialogDescription className="text-muted-foreground">
+            Enter the details for the new workstation to add it to your monitoring system.
+          </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
