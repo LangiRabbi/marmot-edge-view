@@ -57,8 +57,8 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl bg-background border-border">
-        <DialogHeader className="pb-6">
-          <div className="flex items-center justify-between">
+        <DialogHeader>
+          <div className="flex items-start justify-between pr-8">
             <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
               {workstation.name}
               <span className={`text-sm font-medium ${getStatusColor()}`}>
@@ -69,7 +69,7 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
               variant="outline"
               size="sm"
               onClick={handleExportData}
-              className="border-border hover:bg-muted text-foreground mr-10"
+              className="border-border hover:bg-muted text-foreground"
             >
               <Download className="h-4 w-4 mr-2" />
               Export Data
