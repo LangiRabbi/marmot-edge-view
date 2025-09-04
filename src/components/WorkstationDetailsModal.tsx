@@ -66,25 +66,15 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
               </span>
             </DialogTitle>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleExportData}
-              className="border-border hover:bg-muted text-foreground"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export Data
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onOpenChange(false)}
-              className="h-8 w-8 hover:bg-muted"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportData}
+            className="border-border hover:bg-muted text-foreground"
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export Data
+          </Button>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
