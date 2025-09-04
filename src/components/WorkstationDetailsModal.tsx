@@ -57,24 +57,24 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl bg-background border-border">
-        <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
-          <div>
+        <DialogHeader className="pb-6">
+          <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">
               {workstation.name}
               <span className={`text-sm font-medium ${getStatusColor()}`}>
                 {workstation.status.charAt(0).toUpperCase() + workstation.status.slice(1)}
               </span>
             </DialogTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportData}
+              className="border-border hover:bg-muted text-foreground mr-10"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export Data
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExportData}
-            className="border-border hover:bg-muted text-foreground"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export Data
-          </Button>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
