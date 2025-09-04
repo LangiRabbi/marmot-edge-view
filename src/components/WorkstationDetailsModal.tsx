@@ -1,4 +1,4 @@
-import { X, Camera, Clock, Users, Activity, Zap, BarChart3, CheckCircle, AlertTriangle } from "lucide-react";
+import { X, Camera, Clock, Users, Activity, Zap, BarChart3, CheckCircle, AlertTriangle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 interface WorkstationDetailsModalProps {
   open: boolean;
@@ -27,6 +28,8 @@ const mockEvents = [
 ];
 
 export function WorkstationDetailsModal({ open, onOpenChange, workstation }: WorkstationDetailsModalProps) {
+  const { toast } = useToast();
+  
   const getStatusColor = () => {
     switch (workstation.status) {
       case 'online': return 'text-success';
@@ -44,6 +47,13 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
     }
   };
 
+  const handleExportData = () => {
+    toast({
+      title: "Data Export",
+      description: "Workstation data exported successfully.",
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl bg-background border-border">
@@ -56,14 +66,25 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
               </span>
             </DialogTitle>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onOpenChange(false)}
-            className="h-8 w-8 hover:bg-muted"
-          >
-            <X className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportData}
+              className="border-border hover:bg-muted text-foreground"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export Data
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onOpenChange(false)}
+              className="h-8 w-8 hover:bg-muted"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

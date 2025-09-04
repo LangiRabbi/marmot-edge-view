@@ -106,13 +106,18 @@ export function WorkstationCard({
   };
 
   return (
-    <div className="glass-card p-6 smooth-transition">
+    <div className="glass-card p-6 smooth-transition cursor-pointer hover:scale-[1.02]" onClick={handleViewDetails}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-foreground">{name}</h3>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 hover:bg-muted" 
+              onClick={(e) => e.stopPropagation()}
+            >
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
