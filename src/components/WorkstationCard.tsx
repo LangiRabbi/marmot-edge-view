@@ -70,6 +70,7 @@ export function WorkstationCard({
   };
 
   const handleViewDetails = () => {
+    console.log('handleViewDetails called, setting showDetailsModal to true');
     setShowDetailsModal(true);
   };
 
@@ -179,7 +180,10 @@ export function WorkstationCard({
       {/* Modals */}
       <WorkstationDetailsModal
         open={showDetailsModal}
-        onOpenChange={setShowDetailsModal}
+        onOpenChange={(open) => {
+          console.log('WorkstationCard - onOpenChange called with:', open);
+          setShowDetailsModal(open);
+        }}
         workstation={{ name, status, peopleCount, efficiency, lastActivity }}
       />
 
