@@ -70,7 +70,6 @@ export function WorkstationCard({
   };
 
   const handleViewDetails = () => {
-    console.log('handleViewDetails called, setting showDetailsModal to true');
     setShowDetailsModal(true);
   };
 
@@ -107,7 +106,7 @@ export function WorkstationCard({
   };
 
   return (
-    <div className="glass-card p-6 smooth-transition cursor-pointer hover:scale-[1.02]" onClick={handleViewDetails}>
+    <div className="glass-card p-6 smooth-transition hover:scale-[1.02]">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-foreground">{name}</h3>
@@ -123,19 +122,19 @@ export function WorkstationCard({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-popover border-border">
-            <DropdownMenuItem onClick={handleViewDetails} className="hover:bg-muted cursor-pointer">
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleViewDetails(); }} className="hover:bg-muted cursor-pointer">
               <BarChart3 className="mr-2 h-4 w-4" />
               View Details
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleEditName} className="hover:bg-muted cursor-pointer">
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleEditName(); }} className="hover:bg-muted cursor-pointer">
               <Edit className="mr-2 h-4 w-4" />
               Edit Name
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleConfigure} className="hover:bg-muted cursor-pointer">
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleConfigure(); }} className="hover:bg-muted cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               Configure
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleRemove} className="hover:bg-muted text-destructive cursor-pointer">
+            <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleRemove(); }} className="hover:bg-muted text-destructive cursor-pointer">
               <Trash2 className="mr-2 h-4 w-4" />
               Remove
             </DropdownMenuItem>
@@ -180,10 +179,7 @@ export function WorkstationCard({
       {/* Modals */}
       <WorkstationDetailsModal
         open={showDetailsModal}
-        onOpenChange={(open) => {
-          console.log('WorkstationCard - onOpenChange called with:', open);
-          setShowDetailsModal(open);
-        }}
+        onOpenChange={setShowDetailsModal}
         workstation={{ name, status, peopleCount, efficiency, lastActivity }}
       />
 

@@ -31,9 +31,6 @@ const mockEvents = [
 export function WorkstationDetailsModal({ open, onOpenChange, workstation }: WorkstationDetailsModalProps) {
   const { toast } = useToast();
   
-  console.log('WorkstationDetailsModal - open:', open);
-  console.log('WorkstationDetailsModal - onOpenChange:', typeof onOpenChange);
-  
   const getStatusColor = () => {
     switch (workstation.status) {
       case 'online': return 'text-success';
@@ -58,13 +55,8 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
     });
   };
 
-  const handleOpenChange = (newOpen: boolean) => {
-    console.log('Dialog onOpenChange called with:', newOpen);
-    onOpenChange(newOpen);
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl bg-background border-border">
         <DialogHeader>
           <div className="flex items-start justify-between pr-8">
