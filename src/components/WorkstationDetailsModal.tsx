@@ -57,7 +57,7 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl bg-background border-border">
+      <DialogContent className="max-w-4xl bg-background border-border" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <div className="flex items-start justify-between pr-8">
             <DialogTitle className="text-xl font-bold text-foreground flex items-center gap-2">

@@ -106,7 +106,7 @@ export function WorkstationCard({
   };
 
   return (
-    <div className="glass-card p-6 smooth-transition hover:scale-[1.02]">
+    <div className="glass-card p-6 smooth-transition cursor-pointer hover:scale-[1.02]" onClick={handleViewDetails}>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-foreground">{name}</h3>
