@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
@@ -75,6 +76,9 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
               Export Data
             </Button>
           </div>
+          <DialogDescription className="sr-only">
+            Workstation details and monitoring information
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
