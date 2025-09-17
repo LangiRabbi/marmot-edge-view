@@ -1,4 +1,4 @@
-import { X, Camera, Clock, Users, Activity, Zap, MapPin, CheckCircle, AlertTriangle, Download } from "lucide-react";
+import { Camera, Clock, Activity, Zap, MapPin, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
