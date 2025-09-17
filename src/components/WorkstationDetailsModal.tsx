@@ -1,4 +1,4 @@
-import { X, Camera, Clock, Users, Activity, Zap, BarChart3, CheckCircle, AlertTriangle, Download } from "lucide-react";
+import { X, Camera, Clock, Users, Activity, Zap, MapPin, CheckCircle, AlertTriangle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,11 +21,15 @@ interface WorkstationDetailsModalProps {
   };
 }
 
-const mockEvents = [
-  { type: 'shift', message: 'Shift change completed', time: '10:36 PM', status: 'completed' },
-  { type: 'quality', message: 'Quality check passed', time: '10:21 PM', status: 'passed' },
-  { type: 'maintenance', message: 'Maintenance check completed', time: '10:06 PM', status: 'completed' },
-  { type: 'production', message: 'Production cycle finished', time: '09:51 PM', status: 'finished' }
+const mockZones = [
+  { id: 1, name: 'Assembly Line A', status: 'Work' },
+  { id: 2, name: 'Quality Control', status: 'Idle' },
+  { id: 3, name: 'Packaging Station', status: 'Work' },
+  { id: 4, name: 'Storage Area B', status: 'Other' },
+  { id: 5, name: 'Maintenance Bay', status: 'Other' },
+  { id: 6, name: 'Inspection Zone', status: 'Work' },
+  { id: 7, name: 'Raw Materials', status: 'Idle' },
+  { id: 8, name: 'Final Assembly', status: 'Work' },
 ];
 
 export function WorkstationDetailsModal({ open, onOpenChange, workstation }: WorkstationDetailsModalProps) {
@@ -39,12 +43,21 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
     }
   };
 
-  const getEventIcon = (type: string) => {
-    switch (type) {
-      case 'quality': return <CheckCircle className="h-4 w-4 text-success" />;
-      case 'maintenance': return <Activity className="h-4 w-4 text-primary" />;
-      case 'production': return <CheckCircle className="h-4 w-4 text-success" />;
-      default: return <AlertTriangle className="h-4 w-4 text-warning" />;
+  const getZoneStatusColor = (status: string) => {
+    switch (status) {
+      case 'Work': return 'text-success';
+      case 'Idle': return 'text-muted-foreground';
+      case 'Other': return 'text-warning';
+      default: return 'text-muted-foreground';
+    }
+  };
+
+  const getZoneStatusBg = (status: string) => {
+    switch (status) {
+      case 'Work': return 'bg-success/20 border-success/30';
+      case 'Idle': return 'bg-muted/20 border-muted';
+      case 'Other': return 'bg-warning/20 border-warning/30';
+      default: return 'bg-muted/20 border-muted';
     }
   };
 
@@ -117,28 +130,30 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
             </div>
           </div>
 
-          {/* Detection Timeline */}
+          {/* Zone Manager */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-foreground" />
-              <h3 className="text-lg font-semibold text-foreground">Detection Timeline</h3>
+              <MapPin className="h-5 w-5 text-foreground" />
+              <h3 className="text-lg font-semibold text-foreground">Zone Manager</h3>
             </div>
             
             <div className="bg-muted/30 rounded-lg p-4 border border-border">
               <div className="mb-4">
-                <p className="text-sm font-medium text-foreground mb-2">LAST 10 EVENTS</p>
+                <p className="text-sm font-medium text-foreground mb-2">ACTIVE ZONES</p>
               </div>
               
-              <div className="space-y-3">
-                {mockEvents.map((event, index) => (
-                  <div key={index} className="flex items-center gap-3 p-2 bg-background/50 rounded-md border border-border">
-                    {getEventIcon(event.type)}
+              <div className="space-y-3 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                {mockZones.map((zone) => (
+                  <div key={zone.id} className={`flex items-center justify-between p-3 rounded-md border ${getZoneStatusBg(zone.status)}`}>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">{event.message}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">{event.time}</span>
-                      </div>
+                      <p className="text-sm font-medium text-foreground">Zone {zone.id}</p>
+                      <p className="text-xs text-muted-foreground">{zone.name}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-sm font-semibold ${getZoneStatusColor(zone.status)}`}>
+                        {zone.status}
+                      </span>
+                      <p className="text-xs text-muted-foreground">Current Status</p>
                     </div>
                   </div>
                 ))}
