@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
 
 interface MarmotTopBarProps {
   activeSection: string;
@@ -39,16 +38,6 @@ export function MarmotTopBar({ activeSection }: MarmotTopBarProps) {
       </div>
 
       <div className="flex items-center space-x-4">
-        {/* Alert Badge */}
-        <div className="relative">
-          <Badge 
-            variant="destructive" 
-            className="bg-destructive text-destructive-foreground glow-destructive px-3 py-1"
-          >
-            3
-          </Badge>
-        </div>
-
         {/* Real-time Clock */}
         <div className="text-right">
           <div className="text-lg font-mono text-primary bg-transparent border-none outline-none">
