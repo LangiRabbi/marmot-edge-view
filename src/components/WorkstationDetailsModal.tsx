@@ -1,4 +1,4 @@
-import { Camera, Clock, Activity, Zap, MapPin, Download } from "lucide-react";
+import { Camera, Clock, Activity, Zap, MapPin, Download, Edit3, Trash2, Plus, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,7 +7,21 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+
+interface Zone {
+  id: number;
+  name: string;
+  status: 'Work' | 'Idle' | 'Other';
+}
 
 interface WorkstationDetailsModalProps {
   open: boolean;
@@ -21,7 +35,7 @@ interface WorkstationDetailsModalProps {
   };
 }
 
-const mockZones = [
+const initialZones: Zone[] = [
   { id: 1, name: 'Assembly Line A', status: 'Work' },
   { id: 2, name: 'Quality Control', status: 'Idle' },
   { id: 3, name: 'Packaging Station', status: 'Work' },
@@ -34,6 +48,9 @@ const mockZones = [
 
 export function WorkstationDetailsModal({ open, onOpenChange, workstation }: WorkstationDetailsModalProps) {
   const { toast } = useToast();
+  const [zones, setZones] = useState<Zone[]>(initialZones);
+  const [editingZone, setEditingZone] = useState<number | null>(null);
+  const [editingName, setEditingName] = useState('');
   
   const getStatusColor = () => {
     switch (workstation.status) {
@@ -65,6 +82,64 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
     toast({
       title: "Data Export",
       description: "Workstation data exported successfully.",
+    });
+  };
+
+  const handleAddZone = () => {
+    const newId = Math.max(...zones.map(z => z.id)) + 1;
+    const newZone: Zone = {
+      id: newId,
+      name: `New Zone ${newId}`,
+      status: 'Idle'
+    };
+    setZones([...zones, newZone]);
+    toast({
+      title: "Zone Added",
+      description: `Zone ${newId} has been created.`,
+    });
+  };
+
+  const handleDeleteZone = (zoneId: number) => {
+    setZones(zones.filter(zone => zone.id !== zoneId));
+    toast({
+      title: "Zone Deleted",
+      description: `Zone ${zoneId} has been removed.`,
+    });
+  };
+
+  const handleEditZone = (zoneId: number) => {
+    const zone = zones.find(z => z.id === zoneId);
+    if (zone) {
+      setEditingZone(zoneId);
+      setEditingName(zone.name);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (editingZone && editingName.trim()) {
+      setZones(zones.map(zone => 
+        zone.id === editingZone 
+          ? { ...zone, name: editingName.trim() }
+          : zone
+      ));
+      setEditingZone(null);
+      setEditingName('');
+      toast({
+        title: "Zone Updated",
+        description: "Zone name has been updated successfully.",
+      });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingZone(null);
+    setEditingName('');
+  };
+
+  const handleConfigureZone = (zoneId: number) => {
+    toast({
+      title: "Zone Configuration",
+      description: `Configure zone ${zoneId} boundaries on video feed.`,
     });
   };
 
@@ -138,22 +213,94 @@ export function WorkstationDetailsModal({ open, onOpenChange, workstation }: Wor
             </div>
             
             <div className="bg-muted/30 rounded-lg p-4 border border-border">
-              <div className="mb-4">
-                <p className="text-sm font-medium text-foreground mb-2">ACTIVE ZONES</p>
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-sm font-medium text-foreground">ACTIVE ZONES</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddZone}
+                  className="border-border hover:bg-muted text-foreground"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Zone
+                </Button>
               </div>
               
               <div className="space-y-3 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-                {mockZones.map((zone) => (
+                {zones.map((zone) => (
                   <div key={zone.id} className={`flex items-center justify-between p-3 rounded-md border ${getZoneStatusBg(zone.status)}`}>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">Zone {zone.id}</p>
-                      <p className="text-xs text-muted-foreground">{zone.name}</p>
+                      {editingZone === zone.id ? (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={editingName}
+                            onChange={(e) => setEditingName(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleSaveEdit();
+                              if (e.key === 'Escape') handleCancelEdit();
+                            }}
+                            className="text-sm h-8"
+                            autoFocus
+                          />
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={handleSaveEdit}
+                              className="h-6 w-6 p-0 text-success hover:bg-success/20"
+                            >
+                              ✓
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={handleCancelEdit}
+                              className="h-6 w-6 p-0 text-destructive hover:bg-destructive/20"
+                            >
+                              ✕
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-sm font-medium text-foreground">Zone {zone.id}</p>
+                          <p className="text-xs text-muted-foreground">{zone.name}</p>
+                        </>
+                      )}
                     </div>
-                    <div className="text-right">
-                      <span className={`text-sm font-semibold ${getZoneStatusColor(zone.status)}`}>
-                        {zone.status}
-                      </span>
-                      <p className="text-xs text-muted-foreground">Current Status</p>
+                    <div className="flex items-center gap-2">
+                      <div className="text-right">
+                        <span className={`text-sm font-semibold ${getZoneStatusColor(zone.status)}`}>
+                          {zone.status}
+                        </span>
+                        <p className="text-xs text-muted-foreground">Current Status</p>
+                      </div>
+                      {editingZone !== zone.id && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleEditZone(zone.id)}>
+                              <Edit3 className="h-4 w-4 mr-2" />
+                              Rename Zone
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleConfigureZone(zone.id)}>
+                              <MapPin className="h-4 w-4 mr-2" />
+                              Edit Boundaries
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              onClick={() => handleDeleteZone(zone.id)}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete Zone
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
                   </div>
                 ))}
